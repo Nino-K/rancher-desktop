@@ -164,6 +164,12 @@ const LIMA_SUDOERS_LOCATION = '/private/etc/sudoers.d/zzzzz-rancher-desktop-lima
 // Filename used in versions 1.0.0 and earlier:
 const PREVIOUS_LIMA_SUDOERS_LOCATION = '/private/etc/sudoers.d/rancher-desktop-lima';
 
+// If we're running k3s, it will launch containerd and run from a /var/run directory
+// Otherwise we use the directory that containerd uses by default.
+const CONTAINERD_ADDRESS_K3S = '/run/k3s/containerd/containerd.sock}';
+const CONTAINERD_ADDRESS_STANDALONE = '/var/run/containerd/containerd.sock';
+const BUILDKITD_CONF_HELPER = 'buildkitd.rancher-desktop';
+
 function defined<T>(input: T | null | undefined): input is T {
   return input !== null && typeof input !== 'undefined';
 }
@@ -1095,6 +1101,28 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
     }
   }
 
+  protected async startContainerd(): Promise<void> {
+    const workdir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'rd-k3s-install-'));
+
+    try {
+      const fixedProfile = path.join(workdir, 'profile');
+      const profileContents = (await fs.promises.readFile(resources.get('scripts', 'profile'))).toString();
+      const fixedContents = profileContents.replace(/export CONTAINERD_ADDRESS=.*/,
+        `export CONTAINERD_ADDRESS=${ CONTAINERD_ADDRESS_STANDALONE }`);
+
+      await fs.promises.writeFile(fixedProfile, fixedContents);
+      await this.lima('copy', fixedProfile, `${ MACHINE_NAME }:~/.profile`);
+      this.lastCommandComment = 'Starting containerd';
+      await this.progressTracker.action(this.lastCommandComment, 50, async() => {
+        await this.ssh('sudo', '/sbin/rc-service', '--ifnotstarted', 'containerd', 'start');
+      });
+    } catch (err) {
+      console.log(`Error trying to copy modified profile to VM: `, err);
+    } finally {
+      await fs.promises.rm(workdir, { recursive: true });
+    }
+  }
+
   /**
    * Write the given contents to a given file name in the VM.
    * The file will be owned by root.
@@ -1194,6 +1222,7 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
   protected async writeBuildkitScripts() {
     await this.writeFile(`/etc/init.d/buildkitd`, SERVICE_BUILDKITD_INIT, 0o755);
     await this.writeFile(`/etc/conf.d/buildkitd`, SERVICE_BUILDKITD_CONF, 0o644);
+    await this.writeConf(BUILDKITD_CONF_HELPER, { CONTAINERD_ADDRESS: this.#enabledK3s ? CONTAINERD_ADDRESS_K3S : CONTAINERD_ADDRESS_STANDALONE });
   }
 
   /**
@@ -1299,7 +1328,6 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
     if (this.cfg?.containerEngine) {
       this.#currentContainerEngine = this.cfg.containerEngine;
     }
-
     this.lastCommandComment = 'Starting kubernetes';
     await this.progressTracker.action(this.lastCommandComment, 10, async() => {
       try {
@@ -1361,16 +1389,14 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
             await this.installK3s(desiredVersion);
             await this.writeServiceScript();
           });
+        } else if (this.#currentContainerEngine === ContainerEngine.MOBY) {
+          this.lastCommandComment = 'Starting dockerd';
+          await this.progressTracker.action(this.lastCommandComment, 50, async() => {
+            await this.ssh('sudo', '/sbin/rc-service', '--ifnotstarted', 'docker', 'start');
+          });
         } else {
-          if (this.#currentContainerEngine === ContainerEngine.MOBY) {
-            this.lastCommandComment = 'Starting dockerd';
-            await this.progressTracker.action(this.lastCommandComment, 50, async() => {
-              await this.ssh('sudo', '/sbin/rc-service', '--ifnotstarted', 'docker', 'start');
-            });
-          } else {
-
-          }
-          // XXX: Start containerd explicitly
+          this.lastCommandComment = 'Configure and start containerd';
+          await this.progressTracker.action(this.lastCommandComment, 50, this.startContainerd());
         }
         this.lastCommandComment = 'Installing Buildkit';
         await this.progressTracker.action(this.lastCommandComment, 50, this.writeBuildkitScripts());
@@ -1567,7 +1593,6 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
     // the process terminating), as we do not want to shut down the VM in that
     // case.
 
-    console.log(`QQQ: stop: this.#enabledK3s: ${ this.#enabledK3s }`);
     if (this.currentAction !== Action.NONE) {
       return;
     }

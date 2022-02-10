@@ -351,8 +351,6 @@ export default {
       return `v${ version.version.version }`;
     },
     async handleDisableKubernetesCheckbox(value) {
-      console.log(`QQQ: handleDisableKubernetesCheckbox: value: ${ value }`);
-
       if (value !== this.settings.kubernetes.disabled) {
         const confirmationMessage = [`${ !value ? 'Enabling' : 'Disabling' } Kubernetes requires a restart. `,
           '\n\nDo you want to proceed?'].join('');
