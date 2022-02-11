@@ -1489,12 +1489,17 @@ export default class WSLBackend extends events.EventEmitter implements K8s.Kuber
     const result: Record<string, boolean | string> = {};
 
     const executable = await this.getWSLHelperPath();
+    const registeredDistros = (await this.registeredDistros()).filter(distro => !DISTRO_BLACKLIST.includes(distro));
 
-    for (const distro of await this.registeredDistros()) {
-      if (DISTRO_BLACKLIST.includes(distro)) {
-        continue;
-      }
+    if (!this.#enabledK3s) {
+      registeredDistros.forEach((distro: string) => {
+        result[distro] = true;
+      });
 
+      return result;
+    }
+
+    for (const distro of registeredDistros) {
       try {
         const kubeconfigPath = await this.k3sHelper.findKubeConfigToUpdate('rancher-desktop');
         const stdout = await this.execWSL(
@@ -1562,19 +1567,21 @@ export default class WSLBackend extends events.EventEmitter implements K8s.Kuber
     const executable = await this.getWSLHelperPath();
 
     try {
-      const kubeconfigPath = await this.k3sHelper.findKubeConfigToUpdate('rancher-desktop');
+      if (this.#enabledK3s) {
+        const kubeconfigPath = await this.k3sHelper.findKubeConfigToUpdate('rancher-desktop');
 
-      await this.execWSL(
-        {
-          encoding: 'utf-8',
-          env:      {
-            ...process.env,
-            KUBECONFIG: kubeconfigPath,
-            WSLENV:     `${ process.env.WSLENV }:KUBECONFIG/up`,
+        await this.execWSL(
+          {
+            encoding: 'utf-8',
+            env:      {
+              ...process.env,
+              KUBECONFIG: kubeconfigPath,
+              WSLENV:     `${ process.env.WSLENV }:KUBECONFIG/up`,
+            },
           },
-        },
-        '--distribution', distro, '--exec', executable, 'kubeconfig', `--enable=${ state }`,
-      );
+          '--distribution', distro, '--exec', executable, 'kubeconfig', `--enable=${ state }`,
+        );
+      }
       if (state) {
         await this.setupIntegrationProcess(distro);
         this.mobySocketProxyProcesses[distro].start();
