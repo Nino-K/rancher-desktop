@@ -166,7 +166,7 @@ const PREVIOUS_LIMA_SUDOERS_LOCATION = '/private/etc/sudoers.d/rancher-desktop-l
 
 // If we're running k3s, it will launch containerd and run from a /var/run directory
 // Otherwise we use the directory that containerd uses by default.
-const CONTAINERD_ADDRESS_K3S = '/run/k3s/containerd/containerd.sock}';
+const CONTAINERD_ADDRESS_K3S = '/run/k3s/containerd/containerd.sock';
 const CONTAINERD_ADDRESS_STANDALONE = '/var/run/containerd/containerd.sock';
 const BUILDKITD_CONF_HELPER = 'buildkitd.rancher-desktop';
 
@@ -216,7 +216,7 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
   /** The current container engine; changing this requires a full restart. */
   #currentContainerEngine = ContainerEngine.NONE;
 
-  /** True if start() was run with k3s enabled, false if it wasn't. */
+  /** True if start() was called with k3s enabled, false if it wasn't. */
   #enabledK3s = true;
 
   /** The name of the shared lima interface from the config file */
