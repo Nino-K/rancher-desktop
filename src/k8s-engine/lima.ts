@@ -1320,7 +1320,7 @@ export default class LimaBackend extends events.EventEmitter implements K8s.Kube
     const previousVersion = (await this.currentConfig)?.k3s?.version;
     const isDowngrade = previousVersion ? semver.gt(previousVersion, desiredVersion) : false;
     let commandArgs: Array<string>;
-    const enableK3s = this.#enabledK3s = !config.disabled;
+    const enableK3s = this.#enabledK3s = config.enabled;
 
     this.#desiredPort = config.port;
     this.setState(K8s.State.STARTING);
