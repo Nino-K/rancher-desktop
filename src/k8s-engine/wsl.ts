@@ -502,7 +502,7 @@ export default class WSLBackend extends events.EventEmitter implements K8s.Kuber
 
               await this.execCommand('sed', '-i',
                 '-e', 's/#log_owner=root:root/log_owner=root/',
-                '-e', `s/^#?containerd_opts="(.*)"/containerd_opts="\1 --address=${ CONTAINERD_ADDRESS_K3S }"/`,
+                '-e', `s/^#?containerd_opts="(.*)"/containerd_opts="\\1 --address=${ CONTAINERD_ADDRESS_K3S }"/`,
                 '/etc/conf.d/containerd');
             }
           } catch (ex) {
