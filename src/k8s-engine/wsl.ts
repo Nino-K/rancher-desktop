@@ -1484,19 +1484,20 @@ export default class WSLBackend extends events.EventEmitter implements K8s.Kuber
 
   async listIntegrations(): Promise<Record<string, boolean | string>> {
     const result: Record<string, boolean | string> = {};
-
     const executable = await this.getWSLHelperPath();
-    const registeredDistros = (await this.registeredDistros()).filter(distro => !DISTRO_BLACKLIST.includes(distro));
 
-    if (!this.#enabledK3s) {
-      registeredDistros.forEach((distro: string) => {
-        result[distro] = true;
-      });
-
-      return result;
+    for (const distro of await this.registeredDistros()) {
+      if (DISTRO_BLACKLIST.includes(distro)) {
+        continue;
+      }
+      result[distro] = await this.getStateForIntegration(distro, executable);
     }
 
-    for (const distro of registeredDistros) {
+    return result;
+  }
+
+  protected async getStateForIntegration(distro: string, executable: string): Promise<boolean|string> {
+    if (this.#enabledK3s) {
       try {
         const kubeconfigPath = await this.k3sHelper.findKubeConfigToUpdate('rancher-desktop');
         const stdout = await this.execWSL(
@@ -1512,18 +1513,18 @@ export default class WSLBackend extends events.EventEmitter implements K8s.Kuber
           '--distribution', distro, '--exec', executable, 'kubeconfig', '--show');
 
         if (['true', 'false'].includes(stdout.trim())) {
-          result[distro] = stdout.trim() === 'true';
+          return stdout.trim() === 'true';
         } else {
-          result[distro] = stdout.trim();
+          return stdout.trim();
         }
       } catch (error) {
-        if (typeof error === 'object') {
-          result[distro] = error?.toString() || false;
-        }
+        return (typeof error === 'object' && error?.toString()) || false;
       }
-    }
+    } else {
+      const distros:Record<string, boolean|string> = (this.cfg?.WSLIntegrations || {}) as Record<string, boolean|string>;
 
-    return result;
+      return distros[distro] ?? false;
+    }
   }
 
   listIntegrationWarnings(): void {
