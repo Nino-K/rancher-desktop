@@ -17,3 +17,4 @@ ECRCredentialHelper: 0.6.0
 hostResolver: 0.1.5
 mobyOpenAPISpec: "1.42"
 wix: wix3112rtm
+rdNetworking: 1.0.0

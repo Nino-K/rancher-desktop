@@ -22,10 +22,44 @@ function extract(resourcesPath: string, file: string, expectedFile: string): voi
     bsdTar,
     ['-xzf', file, expectedFile],
     {
-      cwd:   resourcesPath,
+      cwd: resourcesPath,
       stdio: 'inherit',
     });
   fs.rmSync(file, { maxRetries: 10 });
+}
+
+export class HostSwitch implements Dependency, GithubDependency {
+  name = 'hostSwitch';
+  //githubOwner = 'rancher-sandbox';
+  //githubRepo = 'rancher-desktop-networking';
+  githubOwner = 'Nino-K';
+  githubRepo = 'rd-networking';
+
+  async download(context: DownloadContext): Promise<void> {
+    const baseURL = `https://github.com/${this.githubOwner}/${this.githubRepo}/releases/download`;
+    const zipName = `rancher-desktop-networking-v${context.versions.rdNetworking}.tar.gz`;
+    const rdNetworkingURL = `${baseURL}/v${context.versions.rdNetworking}/${zipName}`;
+    const hostSwitchPath = path.join(context.internalDir, zipName);
+
+    await download(
+      rdNetworkingURL,
+      hostSwitchPath,
+      { access: fs.constants.W_OK });
+
+    extract(context.internalDir, hostSwitchPath, 'host-switch.exe');
+  }
+
+  async getAvailableVersions(includePrerelease = false): Promise<string[]> {
+    return await getPublishedVersions(this.githubOwner, this.githubRepo, includePrerelease);
+  }
+
+  versionToTagName(version: string): string {
+    return `v${version}`;
+  }
+
+  rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
+    return semver.rcompare(version1, version2);
+  }
 }
 
 export class HostResolverPeer implements Dependency, GithubDependency {
@@ -34,10 +68,10 @@ export class HostResolverPeer implements Dependency, GithubDependency {
   githubRepo = 'rancher-desktop-host-resolver';
 
   async download(context: DownloadContext): Promise<void> {
-    const baseURL = `https://github.com/${ this.githubOwner }/${ this.githubRepo }/releases/download`;
-    const tarName = `host-resolver-v${ context.versions.hostResolver }-linux-amd64.tar.gz`;
-    const resolverVsockPeerURL = `${ baseURL }/v${ context.versions.hostResolver }/${ tarName }`;
-    const resolverVsockPeerPath = path.join(context.internalDir, tarName );
+    const baseURL = `https://github.com/${this.githubOwner}/${this.githubRepo}/releases/download`;
+    const tarName = `host-resolver-v${context.versions.hostResolver}-linux-amd64.tar.gz`;
+    const resolverVsockPeerURL = `${baseURL}/v${context.versions.hostResolver}/${tarName}`;
+    const resolverVsockPeerPath = path.join(context.internalDir, tarName);
 
     await download(
       resolverVsockPeerURL,
@@ -52,7 +86,7 @@ export class HostResolverPeer implements Dependency, GithubDependency {
   }
 
   versionToTagName(version: string): string {
-    return `v${ version }`;
+    return `v${version}`;
   }
 
   rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
@@ -66,9 +100,9 @@ export class HostResolverHost implements Dependency, GithubDependency {
   githubRepo = 'rancher-desktop-host-resolver';
 
   async download(context: DownloadContext): Promise<void> {
-    const baseURL = `https://github.com/${ this.githubOwner }/${ this.githubRepo }/releases/download`;
-    const zipName = `host-resolver-v${ context.versions.hostResolver }-windows-amd64.zip`;
-    const resolverVsockHostURL = `${ baseURL }/v${ context.versions.hostResolver }/${ zipName }`;
+    const baseURL = `https://github.com/${this.githubOwner}/${this.githubRepo}/releases/download`;
+    const zipName = `host-resolver-v${context.versions.hostResolver}-windows-amd64.zip`;
+    const resolverVsockHostURL = `${baseURL}/v${context.versions.hostResolver}/${zipName}`;
     const resolverVsockHostPath = path.join(context.internalDir, zipName);
 
     await download(
@@ -84,7 +118,7 @@ export class HostResolverHost implements Dependency, GithubDependency {
   }
 
   versionToTagName(version: string): string {
-    return `v${ version }`;
+    return `v${version}`;
   }
 
   rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
@@ -98,9 +132,9 @@ export class WSLDistro implements Dependency, GithubDependency {
   githubRepo = 'rancher-desktop-wsl-distro';
 
   async download(context: DownloadContext): Promise<void> {
-    const baseUrl = `https://github.com/${ this.githubOwner }/${ this.githubRepo }/releases/download`;
-    const tarName = `distro-${ context.versions.WSLDistro }.tar`;
-    const url = `${ baseUrl }/v${ context.versions.WSLDistro }/${ tarName }`;
+    const baseUrl = `https://github.com/${this.githubOwner}/${this.githubRepo}/releases/download`;
+    const tarName = `distro-${context.versions.WSLDistro}.tar`;
+    const url = `${baseUrl}/v${context.versions.WSLDistro}/${tarName}`;
     const destPath = path.join(context.resourcesDir, context.platform, tarName);
 
     await download(url, destPath, { access: fs.constants.W_OK });
@@ -113,7 +147,7 @@ export class WSLDistro implements Dependency, GithubDependency {
   }
 
   versionToTagName(version: string): string {
-    return `v${ version }`;
+    return `v${version}`;
   }
 
   rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
@@ -121,7 +155,7 @@ export class WSLDistro implements Dependency, GithubDependency {
     const semver2 = semver.coerce(version2);
 
     if (semver1 === null || semver2 === null) {
-      throw new Error(`One of ${ version1 } and ${ version2 } failed to be coerced to semver`);
+      throw new Error(`One of ${version1} and ${version2} failed to be coerced to semver`);
     }
 
     return semver.rcompare(semver1, semver2);

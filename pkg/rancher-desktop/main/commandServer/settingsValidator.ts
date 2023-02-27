@@ -78,7 +78,7 @@ export default class SettingsValidator {
         numberCPUs:   this.checkLima(this.checkNumber(0, Number.POSITIVE_INFINITY)),
         hostResolver: this.checkPlatform('win32', this.checkBoolean),
       },
-      experimental: { virtualMachine: { socketVMNet: this.checkPlatform('darwin', this.checkBoolean) } },
+      experimental: { virtualMachine: { socketVMNet: this.checkPlatform('darwin', this.checkBoolean) }, rdNetworking: this.checkBoolean },
       WSL:          { integrations: this.checkPlatform('win32', this.checkBooleanMapping) },
       kubernetes:   {
         version: this.checkKubernetesVersion,
