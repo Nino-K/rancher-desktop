@@ -99,6 +99,8 @@ export const defaultSettings = {
       /** macOS only: if set, use socket_vmnet instead of vde_vmnet. */
       socketVMNet: false,
     },
+    /** windows only: if set, use switch off host-resolver and use gvisor based network. */
+    rdNetworking: false,
   },
 };
 

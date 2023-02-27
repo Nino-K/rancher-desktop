@@ -35,7 +35,7 @@ describe('updateFromCommandLine', () => {
         numberCPUs:   2,
         hostResolver: true,
       },
-      experimental: { virtualMachine: { socketVMNet: true } },
+      experimental: { virtualMachine: { socketVMNet: true }, rdNetworking: false },
       WSL:          { integrations: {} },
       kubernetes:   {
         version: '1.23.5',

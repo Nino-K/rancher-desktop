@@ -28,6 +28,102 @@ function extract(resourcesPath: string, file: string, expectedFile: string): voi
   fs.rmSync(file, { maxRetries: 10 });
 }
 
+export class HostSwitch implements Dependency, GithubDependency {
+  name = 'hostSwitch';
+  githubOwner = 'rancher-sandbox';
+  githubRepo = 'rancher-desktop-networking';
+
+  async download(context: DownloadContext): Promise<void> {
+    const baseURL = `https://github.com/${ this.githubOwner }/${ this.githubRepo }/releases/download`;
+    const zipName = `rancher-desktop-networking-v${ context.versions.rdNetworking }.zip`;
+    const rdNetworkingURL = `${ baseURL }/v${ context.versions.rdNetworking }/${ zipName }`;
+    const hostSwitchPath = path.join(context.internalDir, zipName);
+
+    await download(
+      rdNetworkingURL,
+      hostSwitchPath,
+      { access: fs.constants.W_OK });
+
+    extract(context.internalDir, hostSwitchPath, 'host-switch.exe');
+  }
+
+  async getAvailableVersions(includePrerelease = false): Promise<string[]> {
+    return await getPublishedVersions(this.githubOwner, this.githubRepo, includePrerelease);
+  }
+
+  versionToTagName(version: string): string {
+    return `v${ version }`;
+  }
+
+  rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
+    return semver.rcompare(version1, version2);
+  }
+}
+
+export class VmSwitch implements Dependency, GithubDependency {
+  name = 'vmSwitch';
+  githubOwner = 'rancher-sandbox';
+  githubRepo = 'rancher-desktop-networking';
+
+  async download(context: DownloadContext): Promise<void> {
+    const baseURL = `https://github.com/${ this.githubOwner }/${ this.githubRepo }/releases/download`;
+    const tarName = `rancher-desktop-networking-v${ context.versions.rdNetworking }.tar.gz`;
+    const rdNetworkingURL = `${ baseURL }/v${ context.versions.rdNetworking }/${ tarName }`;
+    const vmSwitchPath = path.join(context.internalDir, tarName );
+
+    await download(
+      rdNetworkingURL,
+      vmSwitchPath,
+      { access: fs.constants.W_OK });
+
+    extract(context.binDir, vmSwitchPath, 'vm-switch');
+  }
+
+  async getAvailableVersions(includePrerelease = false): Promise<string[]> {
+    return await getPublishedVersions(this.githubOwner, this.githubRepo, includePrerelease);
+  }
+
+  versionToTagName(version: string): string {
+    return `v${ version }`;
+  }
+
+  rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
+    return semver.rcompare(version1, version2);
+  }
+}
+
+export class NetworkSetup implements Dependency, GithubDependency {
+  name = 'NetworkSetup';
+  githubOwner = 'rancher-sandbox';
+  githubRepo = 'rancher-desktop-networking';
+
+  async download(context: DownloadContext): Promise<void> {
+    const baseURL = `https://github.com/${ this.githubOwner }/${ this.githubRepo }/releases/download`;
+    const tarName = `rancher-desktop-networking-v${ context.versions.rdNetworking }.tar.gz`;
+    const rdNetworkingURL = `${ baseURL }/v${ context.versions.rdNetworking }/${ tarName }`;
+    const networkSetupPath = path.join(context.internalDir, tarName );
+
+    await download(
+      rdNetworkingURL,
+      networkSetupPath,
+      { access: fs.constants.W_OK });
+
+    extract(context.binDir, networkSetupPath, 'network-setup');
+  }
+
+  async getAvailableVersions(includePrerelease = false): Promise<string[]> {
+    return await getPublishedVersions(this.githubOwner, this.githubRepo, includePrerelease);
+  }
+
+  versionToTagName(version: string): string {
+    return `v${ version }`;
+  }
+
+  rcompareVersions(version1: string, version2: string): -1 | 0 | 1 {
+    return semver.rcompare(version1, version2);
+  }
+}
+
 export class HostResolverPeer implements Dependency, GithubDependency {
   name = 'hostResolver';
   githubOwner = 'rancher-sandbox';
