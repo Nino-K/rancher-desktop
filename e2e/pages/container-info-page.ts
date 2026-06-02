@@ -3,17 +3,20 @@ import { expect } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
 
 export class ContainerInfoPage {
-  readonly page:           Page;
-  readonly tab:            Locator;
-  readonly summaryTable:   Locator;
-  readonly loadingSpinner: Locator;
-  readonly errorMessage:   Locator;
-  readonly mountsSection:  Locator;
-  readonly envSection:     Locator;
-  readonly commandSection: Locator;
-  readonly capsSection:    Locator;
-  readonly portsSection:   Locator;
-  readonly labelsSection:  Locator;
+  readonly page:                 Page;
+  readonly tab:                  Locator;
+  readonly summaryTable:         Locator;
+  readonly loadingSpinner:       Locator;
+  readonly errorMessage:         Locator;
+  readonly mountsSectionDetails: Locator;
+  readonly mountsSection:        Locator;
+  readonly envSectionDetails:    Locator;
+  readonly envSection:           Locator;
+  readonly commandSection:       Locator;
+  readonly capsSection:          Locator;
+  readonly portsSectionDetails:  Locator;
+  readonly portsSection:         Locator;
+  readonly labelsSection:        Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,11 +24,14 @@ export class ContainerInfoPage {
     this.summaryTable = page.getByTestId('info-summary-table');
     this.loadingSpinner = page.getByTestId('info-loading');
     this.errorMessage = page.getByTestId('info-error');
-    this.mountsSection = page.getByTestId('info-section-mounts');
-    this.envSection = page.getByTestId('info-section-env');
+    this.mountsSectionDetails = page.getByTestId('info-section-mounts');
+    this.mountsSection = this.mountsSectionDetails.locator('summary');
+    this.envSectionDetails = page.getByTestId('info-section-env');
+    this.envSection = this.envSectionDetails.locator('summary');
     this.commandSection = page.getByTestId('info-section-command');
     this.capsSection = page.getByTestId('info-section-capabilities');
-    this.portsSection = page.getByTestId('info-section-ports');
+    this.portsSectionDetails = page.getByTestId('info-section-ports');
+    this.portsSection = this.portsSectionDetails.locator('summary');
     this.labelsSection = page.getByTestId('info-section-labels');
   }
 

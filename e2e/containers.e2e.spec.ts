@@ -496,18 +496,18 @@ test.describe.serial('Container Info Tab', () => {
     const infoPage = new ContainerInfoPage(page);
 
     // The alpine container has no published ports, but the section must still render.
-    await expect(infoPage.portsSection).toBeVisible();
-    await infoPage.portsSection.locator('summary').click();
-    await expect(infoPage.portsSection).toHaveAttribute('open');
-    await expect(infoPage.portsSection).toContainText('None');
+    await expect(infoPage.portsSectionDetails).toBeVisible();
+    await infoPage.portsSection.click();
+    await expect(infoPage.portsSectionDetails).toHaveAttribute('open');
+    await expect(infoPage.portsSectionDetails).toContainText('None');
   });
 
   test('mounts section can be expanded', async() => {
     const infoPage = new ContainerInfoPage(page);
 
-    await infoPage.mountsSection.locator('summary').click();
+    await infoPage.mountsSection.click();
     // After opening the <details>, the section body should appear.
-    await expect(infoPage.mountsSection).toHaveAttribute('open');
+    await expect(infoPage.mountsSectionDetails).toHaveAttribute('open');
   });
 
   test('switching to Logs tab and back preserves Info data', async() => {
