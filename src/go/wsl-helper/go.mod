@@ -11,7 +11,7 @@ require (
 	github.com/go-openapi/strfmt v0.27.2
 	github.com/go-openapi/swag/conv v0.29.1
 	github.com/go-openapi/swag/jsonutils v0.29.1
-	github.com/go-openapi/swag/stringutils v0.29.1
+	github.com/go-openapi/swag/stringutils v0.29.2
 	github.com/go-openapi/swag/typeutils v0.29.1
 	github.com/go-openapi/validate v1.0.0
 	github.com/go-swagger/go-swagger v0.36.5
