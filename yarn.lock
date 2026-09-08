@@ -2626,25 +2626,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/transform@npm:30.5.0":
-  version: 30.5.0
-  resolution: "@jest/transform@npm:30.5.0"
+"@jest/transform@npm:30.5.1":
+  version: 30.5.1
+  resolution: "@jest/transform@npm:30.5.1"
   dependencies:
     "@babel/core": "npm:^7.27.4"
-    "@jest/types": "npm:30.5.0"
+    "@jest/types": "npm:30.5.1"
     "@jridgewell/trace-mapping": "npm:^0.3.31"
     babel-plugin-istanbul: "npm:^8.0.0"
     chalk: "npm:^4.1.2"
     convert-source-map: "npm:^2.0.0"
     fast-json-stable-stringify: "npm:^2.1.0"
     graceful-fs: "npm:^4.2.11"
-    jest-haste-map: "npm:30.5.0"
+    jest-haste-map: "npm:30.5.1"
     jest-regex-util: "npm:30.5.0"
-    jest-util: "npm:30.5.0"
+    jest-util: "npm:30.5.1"
     pirates: "npm:^4.0.7"
     slash: "npm:^3.0.0"
     write-file-atomic: "npm:^5.0.1"
-  checksum: 10c0/46d35ebcc7345beac1bc75d2c2f13c2a80aa6d451e613d51bd363e5a9260d5b4abe03beadbf43d1871f15c2ce61671efc0eb4bd536a8ed65de3c15a0ff679758
+  checksum: 10c0/560f48993ede78507dc53eb6e063d1decf139faa8267ed1900541fbe98dce684cc0d70897d09ab976c2bbe4dc4fe3844e4798221da65e40fa93c87ac9efc60f4
   languageName: node
   linkType: hard
 
@@ -6871,11 +6871,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-jest@npm:30.5.0":
-  version: 30.5.0
-  resolution: "babel-jest@npm:30.5.0"
+"babel-jest@npm:30.5.1":
+  version: 30.5.1
+  resolution: "babel-jest@npm:30.5.1"
   dependencies:
-    "@jest/transform": "npm:30.5.0"
+    "@jest/transform": "npm:30.5.1"
     "@types/babel__core": "npm:^7.20.5"
     babel-plugin-istanbul: "npm:^8.0.0"
     babel-preset-jest: "npm:30.5.0"
@@ -6884,7 +6884,7 @@ __metadata:
     slash: "npm:^3.0.0"
   peerDependencies:
     "@babel/core": ^7.11.0 || ^8.0.0-0
-  checksum: 10c0/68007e702d87a3935f8815ea068c3061a35cc5dae9e61c155e219e932b2a25c5c1c65c9f13801d7462f2beec047d7df09fb1aa20689dac8bec83bc721d31c158
+  checksum: 10c0/ce3d18eb45443cb9351074fede247fc6ba7845e18ab4b9ee239a1c47560c939d8194d58f7a08d4ebc7fc1060b33189dd62d41972c68ccec3d82261313b98c6dc
   languageName: node
   linkType: hard
 
@@ -11749,11 +11749,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-haste-map@npm:30.5.0":
-  version: 30.5.0
-  resolution: "jest-haste-map@npm:30.5.0"
+"jest-haste-map@npm:30.5.1":
+  version: 30.5.1
+  resolution: "jest-haste-map@npm:30.5.1"
   dependencies:
-    "@jest/types": "npm:30.5.0"
+    "@jest/types": "npm:30.5.1"
     "@parcel/watcher": "npm:^2.6.0"
     "@types/node": "npm:*"
     anymatch: "npm:^3.1.3"
@@ -11761,10 +11761,10 @@ __metadata:
     fdir: "npm:^6.5.0"
     graceful-fs: "npm:^4.2.11"
     jest-regex-util: "npm:30.5.0"
-    jest-util: "npm:30.5.0"
-    jest-worker: "npm:30.5.0"
+    jest-util: "npm:30.5.1"
+    jest-worker: "npm:30.5.1"
     picomatch: "npm:^4.0.3"
-  checksum: 10c0/e2edf5ce9d1fbdd525e3c8b44826bddf3231fd5882905994c70496db12afa70d4f1e92a0446fa55963efc275cb6a1012266ff5e7f55cb3d0277843c7621b6aca
+  checksum: 10c0/a9838762f84c54b1d551650e3c956f8d72370a15b2e9291d4b0c9aab0b4d4f3d1758bbc619ffb028af567d5dc53a73c5e72af078c56c5fa47cd73a2a309ca89a
   languageName: node
   linkType: hard
 
@@ -12075,16 +12075,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:30.5.0":
-  version: 30.5.0
-  resolution: "jest-worker@npm:30.5.0"
+"jest-worker@npm:30.5.1":
+  version: 30.5.1
+  resolution: "jest-worker@npm:30.5.1"
   dependencies:
     "@types/node": "npm:*"
     "@ungap/structured-clone": "npm:^1.3.0"
-    jest-util: "npm:30.5.0"
+    jest-util: "npm:30.5.1"
     merge-stream: "npm:^2.0.0"
     supports-color: "npm:^8.1.1"
-  checksum: 10c0/b5c1132c00a0a3b7350b5e96b4de8067a737b55ff539e75cfce045897fd71fabd074185d455882e08f123b8e5b56cc650cb5063ad6700754db8a7dfc1494750e
+  checksum: 10c0/fe3806769014920c5256ef01e2e9a5aba91a7ded90d7c86a82196f3da03070087c8c6b591f8bbb0b500c184c7cc8c5f22191e51cce504163b24a8b42c4cadd8b
   languageName: node
   linkType: hard
 
@@ -15034,7 +15034,7 @@ __metadata:
     "@yarnpkg/types": "npm:^4.0.1"
     async-mutex: "npm:^0.5.0"
     babel-core: "npm:7.0.0-bridge.0"
-    babel-jest: "npm:30.5.0"
+    babel-jest: "npm:30.5.1"
     babel-loader: "npm:10.1.1"
     chart.js: "npm:4.5.1"
     cookie-universal: "npm:2.2.2"
